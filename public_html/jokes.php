@@ -1,20 +1,22 @@
 <?php
 try{
-	$pdo = new PDO('mysql:host=localhost;dbname=webuser_ijdb;charset=utf8', 'webuser', 'password');
-	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    include_once __DIR__ . '/../includes/DatabaseConnection.php';
+    include_once __DIR__ . '/../includes/DatabaseFunctions.php';
 
-	$sql = 'SELECT `id`, `joketext` FROM `joke`';
-	$jokes = $pdo->query($sql);
+	$jokes = allJokes($pdo);
 
     $title = 'Joke List';
+    $totalJokes = totalJokes($pdo);
 
     ob_start();
+
     include __DIR__ . '/../templates/jokes.html.php';
+    
     $output = ob_get_clean();
 }catch(PDOException $e){
     $title = 'An error has occurred';
 
-	$output = 'Database error.';
+	$output = 'Database error: ' . $e->getMessage() . ' in ' . $e->getFile() . ': ' . $e->getLine();
 }
 
 include __DIR__ . '/../templates/layout.html.php';
